@@ -1,0 +1,40 @@
+server:
+  port: 8300
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:8282/realms/consultation_app_realm/protocol/openid-connect/certs
+  datasource:
+    url: jdbc:mysql://localhost:3307/consultation_db
+    username: test
+    password: test
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    open-in-view: false
+  flyway:
+    url: ${spring.datasource.url}
+    user: ${spring.datasource.username}
+    password: ${spring.datasource.password}
+    locations: "classpath:db/migrations"
+
+keycloak:
+  server-url: http://localhost:8282
+  realm: "consultation_app_realm"
+  client-id: "consultation_app_client"
+  client-secret: "spWJDxn97eyVt61ISm7UwwVRV5RcrN77"
+  admin-realm: "master"
+  admin-client-id: "admin-cli"
+  admin-username: "admin"
+  admin-password: "admin"
+  username-claim: "preferred_username"
+  roles: "roles"
+  claim-realm-access: "realm_access"
+  resource-access: "resource_access"
+
+springdoc:
+  swagger-ui:
+    oauth:
+      client-id: consultation_app_client
+      client-secret: spWJDxn97eyVt61ISm7UwwVRV5RcrN77
