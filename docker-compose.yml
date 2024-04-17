@@ -19,6 +19,17 @@ services:
       SPRINGDOC_SWAGGER_UI_OAUTH_CLIENT_SECRET: spWJDxn97eyVt61ISm7UwwVRV5RcrN77
     command: [ "sh", "-c", "sleep 10 && java -jar /ConsultatingApplication-1.0.0.jar" ]
 
+  front-end:
+    build:
+      context: ../MentorApp # Путь к папке с проектом front-end
+      dockerfile: Dockerfile # Dockerfile для сборки front-end приложения
+    ports:
+      - "3100:3100" # Пробрасываем порт, на котором будет работать front-end
+    depends_on:
+      - consultating-app # Указываем зависимость от сервиса back-end
+      - grafana
+      - prometheus
+
   keycloak-postgres:
     image: library/postgres:${KC_POSTGRES_IMAGE_TAG:-14}
     container_name: ${POSTGRES_CONTAINER_NAME:-postgres}
@@ -81,3 +92,38 @@ services:
       MYSQL_PASSWORD: test
     ports:
       - "3307:3306"
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    depends_on:
+      - prometheus
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    networks:
+      - monitoring
+    restart: always
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - prometheus_data:/prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+    networks:
+      - monitoring
+    restart: always
+
+networks:
+  monitoring:
+volumes:
+  grafana_data:
+  prometheus_data:

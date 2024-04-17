@@ -29,6 +29,9 @@ dependencies {
     implementation "io.swagger.core.v3:swagger-annotations-jakarta:$swaggerAnnotationVersion"
     implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$swaggerSpringDocVersion"
 
+    // https://mvnrepository.com/artifact/io.micrometer/micrometer-core
+    implementation group: 'io.micrometer', name: 'micrometer-core', version: '1.0.0'
+
     compileOnly "org.projectlombok:lombok:$lombokVersion"
     annotationProcessor "org.projectlombok:lombok:$lombokVersion"
 
